@@ -1,0 +1,94 @@
+{
+  "name": "vscode-stingray",
+  "displayName": "stingray",
+  "description": "Stingray Engine tools for VSCode",
+  "version": "0.0.1",
+  "publisher": "jims",
+  "engines": {
+    "vscode": "^1.5.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:stingray.sayHello",
+    "onLanguage:sjson",
+    "workspaceContains:.stingray_project"
+  ],
+  "main": "./out/extension",
+  "contributes": {
+    "commands": [
+      {
+        "command": "stingray.sayHello",
+        "title": "RAPPABARBBRRRUUURR!!!!"
+      }
+    ],
+    "languages": [
+      {
+        "id": "sjson",
+        "aliases": [
+          "Simplified JSON",
+          "SJSON"
+        ],
+        "extensions": [
+          "material",
+          "shader",
+          "shader_node",
+          "shader_source",
+          "render_config",
+          "particles",
+          "bsi",
+          "texture",
+          "unit",
+          "physics",
+          "landscape",
+          "level",
+          "timpani_bank",
+          "timpani_master",
+          "mouse_cursor",
+          "surface_properties",
+          "physics_properties",
+          "decals",
+          "script_flow_nodes",
+          "flow",
+          "network_config",
+          "strings",
+          "volume_type",
+          "package",
+          "sound_environment",
+          "texture_category",
+          "shading_environment_template",
+          "shading_environment",
+          "type",
+          "component",
+          "entity",
+          "renderable"
+        ],
+        "configuration": "./sjson-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "sjson",
+        "scopeName": "source.sjson",
+        "path": "./grammars/sjson.json"
+      }
+    ]
+  },
+  "scripts": {
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "build": "fable",
+    "watch": "fable -w"
+  },
+  "devDependencies": {
+    "@types/mocha": "^2.2.32",
+    "@types/node": "^6.0.40",
+    "eslint": "^3.6.0",
+    "fable-compiler": "^0.6.11",
+    "mocha": "^2.3.3",
+    "vscode": "^1.0.0"
+  },
+  "dependencies": {
+    "fable-core": "^0.6.7"
+  }
+}
