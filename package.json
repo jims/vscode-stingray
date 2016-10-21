@@ -19,8 +19,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "stingray.sayHello",
-        "title": "RAPPABARBBRRRUUURR!!!!"
+        "command": "stingray.startRepl",
+        "title": "Stingray REPL"
       }
     ],
     "languages": [

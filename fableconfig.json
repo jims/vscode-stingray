@@ -1,6 +1,6 @@
 {
     "module": "commonjs",
     "sourceMaps": true,
-    "projFile": "./extension.fsx",
+    "projFile": "./stingray.fsproj",
     "outDir": "out"
 }
