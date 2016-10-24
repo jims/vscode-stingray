@@ -11,23 +11,27 @@ open FSharp.Control
 open Stingray
 open Helpers
 
-let tryConnect host port timeout : JS.Promise<int> =
-    Promise.create (fun resolve reject ->
-        let socket = createNew net.Socket |> unbox<Socket> 
-        socket.setTimeout(float timeout)
-        socket?on("connect", fun _ -> resolve port) |> ignore
-        socket?on("error", reject) |> ignore
+let tryConnect host port timeout : JS.Promise<bool> =
+    Promise.create (fun resolve _ ->
+        let socket = createNew net.Socket |> unbox<Socket>
+        let res ok =
+            socket.destroy() |> ignore
+            resolve ok
+        socket.setTimeout(float timeout) 
+        socket?on("connect", fun _ -> res true) |> ignore
+        socket?on("error", res false) |> ignore
         socket.connect(host, None |> unbox))
-    
-let scanPorts (pstart : int) (pend : int) = seq {
-    for p in pstart .. pend do
-        
 
-    yield 2
-}
+let scanPorts (pstart : int) (pend : int) =
+    let subject = Event<int>()
+    
+    for p in pstart .. pend do
+        tryConnect "127.0.0.1" p 500
+        |> Promise.onSuccess (function true -> subject.Trigger(p) | false -> ())
+        |> ignore
+        
+    subject.Publish
 
 type Host = string * int
-let runningEngines =
-    let subject = Event<Host>()
-    subject.Trigger(("localhost", 1405))
-    
+let runningEngines() =
+    false
