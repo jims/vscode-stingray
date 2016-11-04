@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Fable.Import.VScode.fs" />
     <Compile Include="Helpers.fs" />
+    <Compile Include="Connection.fs" />
     <Compile Include="Repl.fs" />
     <Compile Include="Engines.fs" />
     <Compile Include="Extension.fs" />

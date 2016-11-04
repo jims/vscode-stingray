@@ -12,4 +12,3 @@ open Helpers
 let activate (ctx : vscode.ExtensionContext) =
   Stingray.Engines.activate ctx
   Stingray.Repl.activate ctx
-
