@@ -10,7 +10,6 @@ open Fable.Import.vscode
 open Helpers
 
 let activate (ctx : vscode.ExtensionContext) =
-  vscode.commands.registerCommand("stingray.startRepl", fun _ -> None |> unbox)
-    |> ctx.subscriptions.Add
-  ignore
+  Stingray.Engines.activate ctx
+  Stingray.Repl.activate ctx
 

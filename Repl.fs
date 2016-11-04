@@ -1,4 +1,4 @@
-module Stingray.REPL
+module Stingray.Repl
 
 open Fable.Core
 open Fable.Import
@@ -9,6 +9,7 @@ open Helpers
 
 open FSharp.Control
 
-let start =
+let activate (ctx : vscode.ExtensionContext) : unit =
     vscode.window.createOutputChannel("Stingray")
+    |> ignore
 

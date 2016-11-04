@@ -15,7 +15,7 @@
     "onLanguage:sjson",
     "workspaceContains:.stingray_project"
   ],
-  "main": "./out/extension",
+  "main": "./out/Extension.js",
   "contributes": {
     "commands": [
       {
@@ -84,11 +84,10 @@
     "@types/mocha": "^2.2.32",
     "@types/node": "^6.0.40",
     "eslint": "^3.6.0",
-    "fable-compiler": "^0.6.11",
     "mocha": "^2.3.3",
     "vscode": "^1.0.0"
   },
   "dependencies": {
-    "fable-core": "^0.6.7"
+    "fable-core": "^0.6.10"
   }
 }
