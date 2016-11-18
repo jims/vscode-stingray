@@ -49,6 +49,7 @@
     <Compile Include="Repl.fs" />
     <Compile Include="Engines.fs" />
     <Compile Include="Extension.fs" />
+    <Compile Include="Decoder.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Choose>

@@ -20,19 +20,18 @@ module Scanner =
         Promise.create (fun resolve _ ->
             let socket = createNew net.Socket () |> unbox<Socket>
             let res ok =
-                printfn "tried %i ok=%b" port ok
                 socket.destroy() |> ignore
                 resolve ok
             socket.setTimeout(float timeout) 
-            socket?on("connect", fun _ -> res true) |> ignore
-            socket?on("error", fun _ -> res false) |> ignore
-            socket.connect(sprintf "%s:%i" host port, None |> unbox))
+            socket?on("connect", fun e -> res true) |> ignore
+            socket?on("error", fun e -> res false) |> ignore
+            socket?connect(createObj [ "host" ==> host; "port" ==> port ]) |> ignore)
 
-    let scanPorts (pstart : int) (pend : int) =
+    let scanPorts (ports : seq<int>)  =
         let subject = Event<int>()
         
-        for p in pstart .. pend do
-            tryConnect "127.0.0.1" p 500
+        for p in ports do
+            tryConnect "localhost" p 1000
             |> Promise.onSuccess (function true -> subject.Trigger(p) | false -> ())
             |> ignore
             
@@ -41,6 +40,8 @@ module Scanner =
 let private a : Connection.Link list = []
 
 let activate (ctx : vscode.ExtensionContext) : unit =
-    Scanner.scanPorts 14033 14040
+    seq { 14000..14040 }
+    |> Seq.filter (fun p -> p <> Scanner.assetServerPort)
+    |> Scanner.scanPorts 
     |> Observable.subscribe (fun port -> printfn "%i" port)
     |> ctx.subscriptions.Add
