@@ -11,7 +11,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:stingray.sayHello",
+    "stingray.startRepl",
     "onLanguage:sjson",
     "workspaceContains:.stingray_project"
   ],
