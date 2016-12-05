@@ -59,8 +59,12 @@ module Decode =
 
     let at (path : string list) (b : Decoder<'a>) = List.foldBack field path b
 
-    let fail (err : string) : Decoder<'a> = fun _ -> Err(err)
+    let fail (err : string) : Decoder<'a> = fun _ -> Err err
 
+    let maybe (a : Decoder<'a>) : Decoder<'a option> = fun obj ->
+        match (a obj) with
+        | Ok v -> Ok (Some v)
+        | Err _ -> Ok (None)
     let map (fn : 'a -> 'value) (a : Decoder<'a>) = fun obj -> Result.map fn (a obj)
 
     let map2 (fn : 'a -> 'b -> 'value) (a : Decoder<'a>) (b : Decoder<'b>) = fun obj -> Result.map2 fn (a obj) (b obj)
@@ -68,22 +72,19 @@ module Decode =
     let bind (fn : 'a -> Decoder<'b>) (a : Decoder<'a>) = fun obj ->
         match (a obj) with
         | Ok res -> (fn res) obj
-        | Err e -> Err(e)
+        | Err e -> Err e
 
+    let succeed a : Decoder<'a> = fun _ -> Ok a
     let (>>=) = bind
-
-    let apply fn a =
-        a
-        |> bind fn 
-        //>>= (fun fn' -> map fn' a)
 
     let (:=) = field
 
     let decodeObject (decoder : Decoder<'a>) (obj : obj) =
         decoder obj
 
-    (*
-    let (>>=) (a : Decoder<'a>) (b : Decoder<'b>) : Decoder<'c> =
-        fun (o : obj) ->
-            match (a o) with
-            | Ok()*)
+    type DecoderBuilder() =
+        member x.Bind(a, fn) = bind fn a
+        member x.Return a = succeed a
+        member x.ReturnFrom a = a 
+
+    let decode = DecoderBuilder()

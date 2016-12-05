@@ -20,7 +20,8 @@ let testDecode () =
         createObj [
             "field1" ==> 42;
             "filed2" ==> "I am a string";
-            "nested" ==> createObj [ "a number" ==> false ]
+            "nested" ==> createObj [ "a number" ==> 12 ];
+            "bollen" ==> 1
         ]
 
     //decodeObject ("filed2" := string) object |> log
@@ -30,6 +31,20 @@ let testDecode () =
 
     object
     |> addInts
+    |> log
+
+    let addTheNumbersDecoder = decode {
+        let! added = addInts
+        let! prefix = field "filed2" string
+        let! boll = maybe (field "bollen" int)
+        return sprintf "'%s' goes with ~%i.%s" prefix added
+            (match boll with
+            | Some n -> " Samt " + (if n > 1 then "flera" else "en eller inga") + " bollar"
+            | None -> "")
+    }
+
+    object
+    |> addTheNumbersDecoder
     |> log
 let activate (ctx : vscode.ExtensionContext) : unit =
     vscode.commands.registerCommand("stingray.startRepl", testDecode |> unbox<System.Func<obj, obj>>)
