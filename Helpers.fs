@@ -84,6 +84,8 @@ module Promise =
             unbox<Func<'T, U2<'T, PromiseLike<'T>>>> (fun value -> a value; value),
             unbox<Func<obj,unit>> None
         )
+    
+
 
     /// <summary>
     /// Allows handing promise which is in rejected state. Propagates rejected promise, to allow chaining.
@@ -92,6 +94,26 @@ module Promise =
     let onFail (a : obj -> unit) (pr : Promise<'T>) : Promise<'T> =
         pr.catch (unbox<Func<obj, U2<'T, PromiseLike<'T>>>> (fun reason -> a reason |> ignore; reject reason))
 
+    let all (a : seq<Promise<'T>>) : Promise<ResizeArray<'T>> =
+        JS.Promise.all (unbox<JS.Iterable<U2<'T, PromiseLike<'T>>>> a)
+
+    let allResolved (a : seq<Promise<'T>>) : Promise<ResizeArray<'T>> =
+        let f resolve _ =
+            let promises = Seq.toArray a
+            let mutable n = promises.Length
+            let resolved = ResizeArray<'T>(n)
+
+            let addResult() : unit =
+                n <- n - 1
+                if n = 0 then resolve(resolved)
+
+            for p in promises do
+                p |> onSuccess (fun v -> resolved.Add(v); addResult())
+                |> onFail (fun _ -> addResult())
+                |> ignore
+            
+        create f
+    
     type PromiseBuilder() =
         member inline x.Bind(m,f) = bind f m
         member inline x.Return(a) = lift a

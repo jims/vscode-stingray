@@ -23,11 +23,8 @@ let testDecode () =
             "nested" ==> createObj [ "a number" ==> 12 ];
             "bollen" ==> 1
         ]
-
-    //decodeObject ("filed2" := string) object |> log
-    //decodeObject (at ["nested"; "a number"] int) object |> log
  
-    let addInts = map2 (+) (at ["nested"; "a number"] int) (field "field1" int)
+    let addInts = map2 (+) (at ["nested"; "a number"] int) ("field1" := int)
 
     object
     |> addInts
@@ -35,8 +32,8 @@ let testDecode () =
 
     let addTheNumbersDecoder = decode {
         let! added = addInts
-        let! prefix = field "filed2" string
-        let! boll = maybe (field "bollen" int)
+        let! prefix = "filed2" := string
+        let! boll = maybe ("bollen" := int)
         return sprintf "'%s' goes with ~%i.%s" prefix added
             (match boll with
             | Some n -> " Samt " + (if n > 1 then "flera" else "en eller inga") + " bollar"
@@ -46,6 +43,15 @@ let testDecode () =
     object
     |> addTheNumbersDecoder
     |> log
+
+    """{ "key": 2, "value": "a string", "several": [2, 3, "values"] }"""
+    |> decodeString (decode {
+        return map2
+            (fun a b -> (a, b))
+            ("key" := int)
+            ("value" := string)})
+    |> log
+    
 let activate (ctx : vscode.ExtensionContext) : unit =
     vscode.commands.registerCommand("stingray.startRepl", testDecode |> unbox<System.Func<obj, obj>>)
     |> ctx.subscriptions.Add

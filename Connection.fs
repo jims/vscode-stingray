@@ -6,11 +6,9 @@ open Fable.Import
 open Fable.Import.Browser
 
 type Link =
-    | Open of WebSocket
-    | Closed of string * int
+    inherit WebSocket
 
-
-let ``open`` (host : string) (port : int) =
-    let connection = WebSocket.Create("hejsan")
+let ``open`` (host : string) (port : int) : Link =
+    let connection = WebSocket.Create(sprintf "ws://%s:%d" host port) :?> Link
     connection
 

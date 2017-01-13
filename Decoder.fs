@@ -37,6 +37,9 @@ module Decode =
     [<Emit("typeof($0)")>]
     let jstypeof a : string = jsNative
 
+    [<Emit("JSON")>]
+    let JSON : obj = jsNative
+
     let primitiveType<'a> test obj =
         if (test obj)
         then Ok (unbox<'a> obj)
@@ -76,15 +79,18 @@ module Decode =
 
     let succeed a : Decoder<'a> = fun _ -> Ok a
     let (>>=) = bind
-
     let (:=) = field
 
     let decodeObject (decoder : Decoder<'a>) (obj : obj) =
         decoder obj
 
+    let decodeString (decoder: Decoder<'a>) (json : string) =
+        decoder (JSON?parse(json))
+
     type DecoderBuilder() =
         member x.Bind(a, fn) = bind fn a
         member x.Return a = succeed a
-        member x.ReturnFrom a = a 
+        member x.ReturnFrom a = a
+        member x.Combine(a, _) = a
 
     let decode = DecoderBuilder()
